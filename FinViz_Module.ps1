@@ -35,7 +35,7 @@ function Get-FinVizFilters {
             $te,
             $int
         )
-        $Percent = 100*($int/67)
+        $Percent = 100*($int/$title.Count)
         Write-Progress -Activity "Sorting Filters" -PercentComplete $Percent -Status $ti
         $Opt = $Options[$int]
         $Opt = $Opt | Where-Object {$_.text -notlike "*Elite only*" -and $_.text -ne "Any"}
