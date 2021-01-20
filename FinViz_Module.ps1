@@ -93,43 +93,16 @@ function Set-FinVizFilters {
             ParameterSetName = 'Single',
             Mandatory = $true
         )]
-        <#[ValidateScript({
-            if ($FinVizFilter.Description -contains $_ -or $FinVizFilter.Filter -contains $_){
-                $true
-            } else {
-                Throw [System.Management.Automation.ItemNotFoundException] "The filter `"$_`" is not found in the Filter Set provided by the FinVizFilter parameter."
-            }
-        })]#>$Filter,
+        $Filter,
         [Parameter(
             ParameterSetName = 'Single',
             Mandatory = $true
         )]
-        <#[ValidateScript({
-            $Values = ($FinVizFilter | Where-Object { $_.Description -eq $Filter -or $_.Filter -eq $Filter}).Values
-            if ($Values.Description -contains $_ -or $Values.Value -contains $_){
-                $true
-            } else {
-                Throw [System.Management.Automation.ItemNotFoundException] "The value `"$_`" is not found under the Filter `"$Filter`" in the Filter Set provided in the FinVizFilter parameter."
-            }
-        })]#>$Value,
+        $Value,
         [Parameter(
             ParameterSetName = 'Hash',
             Mandatory = $true
         )]
-        <#[ValidateScript({
-            foreach ($K in $_.Keys){
-                if (!($FinVizFilter.Description -contains $K -or $FinVizFilter.Filter -contains $K)){
-                    Write-Warning "The filter `"$K`" is not found in the Filter Set provided by the FinVizFilter parameter. It will be skipped."
-                } else {
-                    $Val = $_[$K]
-                    $Filter = $FinVizFilter | Where-Object { $_.Description -eq $K -or $_.Filter -eq $K }
-                    if (!($Filter.Values.Description -contains $Val -or $Filter.Values.Value -contains $Val)){
-                        Write-Warning "The value `"$Val`" is not found under the Filter `"$K`" in the Filter Set provided in the FinVizFilter parameter. It will be skipped."
-                    }
-                }
-            }
-            $true
-        })]#>
         [Hashtable]$Hashtable
     )
     Begin {
