@@ -200,7 +200,7 @@ function Get-FVURLs {
                 foreach ($Filter in $FinVizFilter){
                     $Description = $Filter.Description
                     $BaseFilter = $Filter.Filter
-                    $ModURL = $BaseURL + $BaseFilter + "_"
+                    $ModURL = $BaseURL + '&f=' + $BaseFilter + "_"
                     foreach ($Val in $Filter.Values){
                         if ($Val.Enable -eq $true){
                             $FinalURL = $ModURL + $Val.Value + "&ft=4"
@@ -339,13 +339,16 @@ function Get-FVStocks {
                 for ($PN = 1; $PN -lt $ParameterNames.Count; $PN++){
                     Remove-Variable Dat -Confirm:$false -ErrorAction SilentlyContinue
                     $Parameter = $ParameterNames[$PN]
+                    if ($Data[$PN] -like "*%"){
+                        $Parameter = $Parameter + ' %'
+                    }
                     switch ($FormatCurrency){
                         $true {
                             switch ($Parameter) {
                                 'Market Cap' {$Dat = ToCurrency -Num (ToNumber -NumberString $Data[$PN])}
                                 'Price' {$Dat = ToCurrency -Num $Data[$PN] -Decimal}
                                 'Volume' {[int64]$Dat = $Data[$PN]}
-                                'Change' {[float]$Dat = $Data[$PN].Trim('%')}
+                                'Change %' {[float]$Dat = $Data[$PN].Trim('%')}
                                 Default {$Dat = $Data[$PN]}
                             }
                         }
@@ -354,7 +357,7 @@ function Get-FVStocks {
                                 'Market Cap' {[int64]$Dat = ToNumber -NumberString $Data[$PN]}
                                 'Price' {[float]$Dat = $Data[$PN]}
                                 'Volume' {[int64]$Dat = $Data[$PN]}
-                                'Change' {[float]$Dat = $Data[$PN].Trim('%')}
+                                'Change %' {[float]$Dat = $Data[$PN].Trim('%')}
                                 Default {$Dat = $Data[$PN]}
                             }
                         }
@@ -447,7 +450,7 @@ function Get-FVTickerData {
     $Hash = @{}
     $Hash.Ticker = $Ticker
     $Hash.Company = $Company
-    $Hash.FinVizURL = $URL
+    $Hash.URL = $URL
     $Hash.CompanyURL = $Parsed.body.getElementsByClassName('tab-link') | ForEach-Object {
         if ($_.innerText -eq $Company){
             $_.href
